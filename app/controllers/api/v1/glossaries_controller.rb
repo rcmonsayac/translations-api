@@ -8,7 +8,7 @@ class Api::V1::GlossariesController < ApplicationController
 
 
     if glossary.save
-      render json: glossary.id
+      render json: { id: glossary.id } 
     else
       render json: { error: 'Unable to create Glossary' }, status: :bad_request
     end
@@ -18,10 +18,11 @@ class Api::V1::GlossariesController < ApplicationController
   def get_all_glossaries
     all_glossaries_with_terms = Glossary.includes(:terms, :source_language, :target_language).all.map do |glossary|
       {
+        id: glossary.id,
         source_language_code: glossary.source_language.code,
         target_language_code: glossary.target_language.code,
         terms: glossary.terms.map do |term|
-          { source_term: term.source, target_term: term.target }
+          { id: term.id, source_term: term.source, target_term: term.target }
         end
       }
     end
@@ -35,7 +36,14 @@ class Api::V1::GlossariesController < ApplicationController
       render json: { error: 'Unable to find Glossary' }, status: :bad_request
     else
       glossary_with_terms = Glossary.includes(:terms, :source_language, :target_language).find_by(id: params[:id])
-      render json: { source_language_code: glossary_with_terms.source_language.code, target_language_code: glossary_with_terms.target_language.code, terms: glossary_with_terms.terms }
+      render json: { 
+        id: glossary_with_terms.id,
+        source_language_code: glossary_with_terms.source_language.code, 
+        target_language_code: glossary_with_terms.target_language.code, 
+        terms: glossary_with_terms.terms.map do |term|
+          { id: term.id, source_term: term.source, target_term: term.target }
+        end
+      }
     end
   end
 
@@ -47,7 +55,7 @@ class Api::V1::GlossariesController < ApplicationController
     term.glossary_id = params[:id]
   
     if term.save
-      render json: term.id
+      render json: { id: term.id } 
     else
       render json: { error: 'Unable to create Term' }, status: :bad_request
     end

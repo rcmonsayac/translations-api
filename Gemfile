@@ -38,3 +38,10 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+
+gem 'rspec-rails', '~> 4.0', '>= 4.0.1'
+
+group :development, :test do
+  gem 'factory_bot_rails'
+  gem 'database_cleaner-active_record'
+end
